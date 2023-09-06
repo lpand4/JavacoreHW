@@ -43,7 +43,7 @@ public class Program {
      */
     private static void initialize() {
         fieldSizeX = 5;
-        fieldSizeY = 3;
+        fieldSizeY = 5;
         field = new char[fieldSizeY][fieldSizeX];
         for (int i = 0; i < fieldSizeY; i++) {
             for (int j = 0; j < fieldSizeX; j++) {
@@ -144,7 +144,10 @@ public class Program {
                     sc.nextLine();
                 }
             }
-            System.out.println("Вы вышли за пределы поля или на чужую ячейку!");
+            if(!isCellValid(x, y) || !isCellEmpty(x, y)){
+                System.out.println("Вы вышли за пределы поля или на чужую ячейку!");
+            }
+
         } while (!isCellValid(x, y) || !isCellEmpty(x, y));
         field[x][y] = DOT_HUMAN;
     }
@@ -177,7 +180,6 @@ public class Program {
     private static void aiTurn() {
         int x, y;
         do {
-            //System.out.println("Введите координаты хода X и Y (от 1 до 3) через пробел >>> ");
             x = rnd.nextInt(fieldSizeX);
             y = rnd.nextInt(fieldSizeY);
         } while (!isCellEmpty(y, x));
@@ -191,7 +193,7 @@ public class Program {
      * @param s победный слоган
      */
     private static boolean checkGameState(char c, String s) {
-        if (checkWin(c)) {
+        if (checkWinV2()) {
             System.out.println(s);
             return true;
         }
@@ -224,6 +226,81 @@ public class Program {
         if (field[0][0] == c && field[1][1] == c && field[2][2] == c) return true;
         if (field[0][2] == c && field[1][1] == c && field[2][0] == c) return true;
         return false;
+    }
+
+    private static boolean checkWinV2(){
+        for (int i = 0; i < fieldSizeY; i++) {
+            for (int j = 0; j < fieldSizeX; j++) {
+                if(j <= fieldSizeX - WIN_COUNT && field[i][j] != DOT_EMPTY){
+                    if(checkHorizontal(i, j)) return true;
+                }
+                if(i <= fieldSizeY - WIN_COUNT && field[i][j] != DOT_EMPTY){
+                    if(checkVertical(i, j)) return true;
+                }
+                if(i <= fieldSizeY - WIN_COUNT && j <= fieldSizeX - WIN_COUNT && field[i][j] != DOT_EMPTY){
+                    if(checkLowerDiagonal(i, j)) return true;
+                }
+                if(i >= WIN_COUNT - 1 && j <= fieldSizeX - WIN_COUNT && field[i][j] != DOT_EMPTY){
+                    if(checkUpperDiagonal(i, j)) return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Проверка на победу по диагонали
+     * @return
+     */
+    private static boolean checkHorizontal(int y, int x){
+        int i = 1;
+        int flag_win = 0;
+        while (i < WIN_COUNT && field[y][x] == field[y][x + i]){
+            i++;
+            flag_win++;
+        }
+        return flag_win == (WIN_COUNT - 1);
+    }
+
+    /**
+     * Проверка на победу по вертикали
+     * @return
+     */
+    private static boolean checkVertical(int y, int x){
+        int i = 1;
+        int flag_win = 0;
+        while (i < WIN_COUNT && field[y][x] == field[y + i][x]){
+            i++;
+            flag_win++;
+        }
+        return flag_win == (WIN_COUNT - 1);
+    }
+
+    /**
+     * Проверка на победу по диагонали вправо-вниз
+     * @return
+     */
+    private static boolean checkLowerDiagonal(int y, int x){
+        int i = 1;
+        int flag_win = 0;
+        while (i < WIN_COUNT && field[y][x] == field[y + i][x + i]){
+            i++;
+            flag_win++;
+        }
+        return flag_win == (WIN_COUNT - 1);
+    }
+    /**
+     * Проверка на победу по диагонали вправо-вверх
+     * @return
+     */
+    private static boolean checkUpperDiagonal(int y, int x){
+        int i = 1;
+        int flag_win = 0;
+        while (i < WIN_COUNT && field[y][x] == field[y - i][x + i]){
+            i++;
+            flag_win++;
+        }
+        return flag_win == (WIN_COUNT - 1);
     }
 
     /**
