@@ -26,7 +26,7 @@ public class Program {
         for (Employee e:employees) {
             System.out.println(e);
         }
-        Collections.sort(employees, new EmployeeNameComparator());
+        Collections.sort(employees, new EmployeePhoneNumberComparator());
         System.out.println();
         for (Employee e:employees) {
             System.out.println(e);
