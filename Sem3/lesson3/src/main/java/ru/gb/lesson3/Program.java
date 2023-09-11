@@ -31,6 +31,21 @@ public class Program {
         for (Employee e:employees) {
             System.out.println(e);
         }
+        System.out.println("\n////////////////////////////////////////////////////////////\n");
+
+
+
+        Employee[] someEmployees = {Worker.getInstance(), Freelancer.getInstance(), Worker.getInstance(),
+                Worker.getInstance(), Freelancer.getInstance(),Freelancer.getInstance(),
+                Freelancer.getInstance(),Freelancer.getInstance(),Worker.getInstance(),
+                Worker.getInstance(), Freelancer.getInstance(),Freelancer.getInstance(),
+                Freelancer.getInstance(), Worker.getInstance(), Freelancer.getInstance()};
+
+        EmployeesStorage employeesStorage = new EmployeesStorage(someEmployees);
+        for (Employee e : employeesStorage) {
+            System.out.println(e);
+        }
+
 
     }
 }
