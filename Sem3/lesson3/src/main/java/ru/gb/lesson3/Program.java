@@ -46,6 +46,11 @@ public class Program {
             System.out.println(e);
         }
 
+        System.out.println("\n////////////////////////////////////////////////////////////\n");
+        for (Employee e: someEmployees) {
+            System.out.println(e);
+        }
+
 
     }
 }
