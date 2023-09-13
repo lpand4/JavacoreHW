@@ -18,47 +18,54 @@ public class Program {
     private static final Random random = new Random();
 
 
-    public static void main(String[] args){
+    public static void main(String[] args) {
+        // Создаем 10 тестовых массивов
         String[][][] testArrays = new String[10][][];
         for (int i = 0; i < testArrays.length; i++) {
-            System.out.printf("\nТестовый массив номер %d\n", i+1);
+            System.out.printf("\nТестовый массив номер %d\n", i + 1);
             testArrays[i] = generateArray();
             printArray(testArrays[i]);
         }
+        // Начинаем тестить
         System.out.println("---------Начало тестов----------\n");
 
         for (int i = 0; i < testArrays.length; i++) {
             try {
-                System.out.printf("Сумма тестового массива #%d = %d\n", i+1, sumOfArray(testArrays[i]));
-                }
-            catch (MyArrayDataException e){
+                System.out.printf("Сумма элементов тестового массива #%d = %d\n", i + 1, sumOfArray(testArrays[i]));
+            } catch (MyArrayDataException e) {
                 System.out.printf("В ячейке (%d,%d) тестового массива найден символ типа не int\n", e.getIndex()[0], e.getIndex()[1]);
-            }catch (NonSquareArrayException e){
+            } catch (NonSquareArrayException e) {
                 System.out.printf("Массив является не квадратным в строчках %s\n", e.getIndexRow().toString());
-            }catch (MyArraySizeException e){
-                System.out.printf("Размерность массива отличается от 4х4 и составляет %dx%d\n",e.getSize()[0], e.getSize()[1]);
+            } catch (MyArraySizeException e) {
+                System.out.printf("Размерность массива отличается от 4х4 и составляет %dx%d\n", e.getSize()[0], e.getSize()[1]);
             }
         }
-
-
     }
-    public static int sumOfArray(String[][] array) throws MyArraySizeException {
-        if(array.length != 4){
-            if (checkForSquare(array).size() != 0){
-                throw new NonSquareArrayException("Массив является не квадратным!",checkForSquare(array));
-            }else {
+
+    /**
+     * Сумма элементов двумерного массива
+     * @param array Двумерный массив
+     * @return Результат суммы
+     * @throws MyArraySizeException неверный размер массива
+     * @throws MyArrayDataException неверный символ в массиве
+     */
+    public static int sumOfArray(String[][] array) throws MyArraySizeException, MyArrayDataException {
+        if (array.length != 4) {
+            if (checkForSquare(array).size() != 0) {
+                throw new NonSquareArrayException("Массив является не квадратным!", checkForSquare(array));
+            } else {
                 throw new MyArraySizeException("Массив должен быть размрностью 4х4", new int[]{array.length, array[0].length});
             }
         }
-        if(checkForSquare(array).size() != 0){
-            throw new NonSquareArrayException("Массив является не квадратным!",checkForSquare(array));
+        if (checkForSquare(array).size() != 0) {
+            throw new NonSquareArrayException("Массив является не квадратным!", checkForSquare(array));
         }
         int sum = 0;
         for (int i = 0; i < array.length; i++) {
             for (int j = 0; j < array[i].length; j++) {
                 try {
                     sum += parseInt(array[i][j]);
-                }catch (MyArrayDataException e) {
+                } catch (MyArrayDataException e) {
                     throw new MyArrayDataException(e.getMessage(), new int[]{i, j});
                 }
             }
@@ -66,54 +73,67 @@ public class Program {
         return sum;
     }
 
+
+    /**
+     * Перевод строки в число
+     * @param value Строка, которую нужно перевести
+     * @return Значение числа
+     * @throws MyArrayDataException Неверное значение в строке
+     */
     private static int parseInt(String value) throws MyArrayDataException {
         try {
             return Integer.parseInt(value);
-        }catch (NumberFormatException e){
+        } catch (NumberFormatException e) {
             throw new MyArrayDataException("Неверный символ!");
         }
     }
 
-    public static List<Integer> checkForSquare(String[][] array){
+    /**
+     * Проверка на квадратность двумерного массива
+     * @param array двумерный массив
+     * @return лист строк, отличающихся по размеру
+     */
+    private static List<Integer> checkForSquare(String[][] array) {
         List<Integer> nonSquareRows = new ArrayList<>();
         for (int i = 0; i < array.length; i++) {
-            if(array[i].length != array.length){
+            if (array[i].length != array.length) {
                 nonSquareRows.add(i);
             }
         }
         return nonSquareRows;
     }
-    public static String[][] generateArray(){
+
+    /**
+     * Генератор двумерных массивов, подходящих под задачу и сломанных
+     * @return двумерный массив
+     */
+    private static String[][] generateArray() {
         String[][] resArray;
-        if(random.nextInt(2) == 0){
+        if (random.nextInt(2) == 0) {
             resArray = new String[4][4];
-        }else {
+        } else {
             resArray = new String[3][3];
         }
         for (int i = 0; i < resArray.length; i++) {
             for (int j = 0; j < resArray[i].length; j++) {
-                if(random.nextInt(50) < 48){
-                    resArray[i][j] = String.valueOf(random.nextInt(10));
-                }else {
+                if (random.nextInt(50) < 48) {
+                    resArray[i][j] = String.valueOf(random.nextInt(6));
+                } else {
                     resArray[i][j] = "ERR";
                 }
             }
         }
         return resArray;
     }
-    public static String[][] generateNormalArray(){
-        String[][] normalArray = new String[4][4];
-        for (int i = 0; i < 4; i++) {
-            for (int j = 0; j < 4; j++) {
-                normalArray[i][j] = String.valueOf(1);
-            }
-        }
-        return normalArray;
-    }
-    public static void printArray(String[][] array){
+
+    /**
+     * Вывод двумерного массива на экран
+     * @param array двумерный массив
+     */
+    private static void printArray(String[][] array) {
         for (int i = 0; i < array.length; i++) {
             for (int j = 0; j < array[i].length; j++) {
-                System.out.printf("%s ",array[i][j]);
+                System.out.printf("%s ", array[i][j]);
             }
             System.out.println();
         }
