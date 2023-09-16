@@ -1,4 +1,6 @@
 import java.io.File;
+import java.util.Arrays;
+import java.util.stream.Stream;
 
 public class Tree {
     public static void main(String[] args) {
@@ -18,9 +20,10 @@ public class Tree {
         System.out.println(file.getName());
 
         File[] files = file.listFiles();
+
         if (files == null)
             return;
-
+        files = sortFiles(files);
         for (int i = 0; i < files.length; i++) {
             if (files[i].isDirectory()) {
                 print(files[i], indent, i == files.length - 1);
@@ -30,4 +33,26 @@ public class Tree {
             }
         }
     }
+
+    // Сделал, чтобы сначала вывлдились файлы, затем директории
+    private static File[] sortFiles(File[] files){
+        File[] result = new File[files.length];
+        int i = 0;
+        while (i != result.length){
+            for (int j = 0; j < files.length; j++) {
+                if (files[j].isFile()){
+                    result[i] = files[j];
+                    i++;
+                }
+            }
+            for (int j = 0; j < files.length; j++) {
+                if (files[j].isDirectory()){
+                    result[i] = files[j];
+                    i++;
+                }
+            }
+        }
+        return result;
+    }
+
 }
